@@ -11,7 +11,7 @@ class DB_Functions {
 
     // constructor
     function __construct() {
-        require_once 'DB_Connect.php';
+        require_once 'include/DB_Connect.php';
         // connecting to database
         $db = new Db_Connect();
         $this->conn = $db->connect();
@@ -31,8 +31,8 @@ class DB_Functions {
         $hash = $this->hashSSHA($password);
         $encrypted_password = $hash["encrypted"]; // encrypted password
         $salt = $hash["salt"]; // salt
-        $photo = $uuid . ".png";  
-        $path = "upload/$uuid.png";
+        $photo = $username . ".png";  
+        $path = "upload/$username.png";
 
         $stmt = $this->conn->prepare("INSERT INTO user_tes(unique_id, name, username, encrypted_password, salt, previllage, created_at, image) VALUES(?, ?, ?, ?, ?, ?, NOW(), ?)");
         $stmt->bind_param("sssssss", $uuid, $name, $username, $encrypted_password, $salt, $previllage, $photo);
@@ -42,13 +42,7 @@ class DB_Functions {
         // check for successful store
         if ($result) {
             file_put_contents($path,base64_decode($image));
-            $stmt = $this->conn->prepare("SELECT * FROM user_tes WHERE  username = ?");
-            $stmt->bind_param("s", $username);
-            $stmt->execute();
-            $user = $stmt->get_result()->fetch_assoc();
-            $stmt->close();
-
-            return $user;
+            return true;
         } else {
             return false;
         }
