@@ -29,6 +29,10 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
         $response["user"]["previllage"] = $user["previllage"];
         $response["user"]["created_at"] = $user["created_at"];
         $response["user"]["updated_at"] = $user["updated_at"];
+
+        //response sending image
+        $img_string = $db->convertImageToBase64($user["image"]);
+        $response["user"]["image"] = $img_string;
         echo json_encode($response);
     } else {
         // user is not found with the credentials

@@ -31,8 +31,13 @@ class DB_Functions {
         $hash = $this->hashSSHA($password);
         $encrypted_password = $hash["encrypted"]; // encrypted password
         $salt = $hash["salt"]; // salt
+<<<<<<< HEAD
         $photo = $username . ".png";  
         $path = "upload/$username.png";
+=======
+        $photo = $name . ".png";  
+        $path = "upload/$name.png";
+>>>>>>> d0fe124dba9f7154b42b56e7a52078de6646d6da
 
         $stmt = $this->conn->prepare("INSERT INTO user_tes(unique_id, name, username, encrypted_password, salt, previllage, created_at, image) VALUES(?, ?, ?, ?, ?, ?, NOW(), ?)");
         $stmt->bind_param("sssssss", $uuid, $name, $username, $encrypted_password, $salt, $previllage, $photo);
@@ -151,6 +156,14 @@ class DB_Functions {
         $hash = base64_encode(sha1($password . $salt, true) . $salt);
 
         return $hash;
+    }
+
+    public function convertImageToBase64($image){
+        $path = 'upload/$image.png';
+        $type = pathinfo($path, PATH_INFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        return $base64
     }
 
 }
