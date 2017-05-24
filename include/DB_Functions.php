@@ -159,6 +159,14 @@ class DB_Functions {
         return $hash;
     }
 
+    public function convertImageToBase64($image){
+        $path = 'upload/$image.png';
+        $type = pathinfo($path, PATH_INFO_EXTENSION);
+        $data = file_get_contents($path);
+        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
+        return $base64
+    }
+
 }
 
 ?>
