@@ -26,7 +26,39 @@ class DB_Functions {
      * Storing new user
      * returns user details
      */
-    public function storeUser($name, $previllage, $username, $password) {
+    public function storeUser($name, $previllage, $username, $password, $image) {
+        $uuid = uniqid('', true);
+        $hash = $this->hashSSHA($password);
+        $encrypted_password = $hash["encrypted"]; // encrypted password
+        $salt = $hash["salt"]; // salt
+        $photo = $uuid . ".png";  
+        $path = "upload/$uuid.png";
+
+        $stmt = $this->conn->prepare("INSERT INTO user_tes(unique_id, name, username, encrypted_password, salt, previllage, created_at, image) VALUES(?, ?, ?, ?, ?, ?, NOW(), ?)");
+        $stmt->bind_param("sssssss", $uuid, $name, $username, $encrypted_password, $salt, $previllage, $photo);
+        $result = $stmt->execute();
+        $stmt->close();
+
+        // check for successful store
+        if ($result) {
+            file_put_contents($path,base64_decode($image));
+            $stmt = $this->conn->prepare("SELECT * FROM user_tes WHERE  username = ?");
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $user = $stmt->get_result()->fetch_assoc();
+            $stmt->close();
+
+            return $user;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * updating existed user
+     * returns user details
+     */
+    public function updateUser($name, $previllage, $username, $password) {
         $uuid = uniqid('', true);
         $hash = $this->hashSSHA($password);
         $encrypted_password = $hash["encrypted"]; // encrypted password

@@ -1,4 +1,4 @@
- <?php
+<?php
 
 /**
  * @author Ravi Tamada
@@ -11,24 +11,21 @@ $db = new DB_Functions();
 // json response array
 $response = array("error" => FALSE);
 
-if (isset($_POST['name']) && isset($_POST['previllage']) && isset($_POST['username'])&& isset($_POST['password'])&& isset($_POST['image'])) {
+if (isset($_POST['name']) && isset($_POST['username'])) {
 
     // receiving the post params
     $name = $_POST['name'];
-    $previllage = $_POST['previllage'];
     $username = $_POST['username'];
-    $password = $_POST['password'];
-    $image = $_POST['image'];
 
     // check if user is already existed with the same username
     if ($db->isUserExisted($username)) {
         // user already existed
         $response["error"] = TRUE;
-        $response["error_msg"] = "User already existed with " . $username;
+        $response["error_msg"] = "username already existed";
         echo json_encode($response);
     } else {
         // create a new user
-        $user = $db->storeUser($name, $previllage, $username, $password, $image);
+        $user = $db->storeUser($name, $previllage, $username, $password);
         if ($user) {
             // user stored successfully
             $response["error"] = FALSE;
