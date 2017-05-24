@@ -31,8 +31,8 @@ class DB_Functions {
         $hash = $this->hashSSHA($password);
         $encrypted_password = $hash["encrypted"]; // encrypted password
         $salt = $hash["salt"]; // salt
-        $photo = $uuid . ".png";  
-        $path = "upload/$uuid.png";
+        $photo = $name . ".png";  
+        $path = "upload/$name.png";
 
         $stmt = $this->conn->prepare("INSERT INTO user_tes(unique_id, name, username, encrypted_password, salt, previllage, created_at, image) VALUES(?, ?, ?, ?, ?, ?, NOW(), ?)");
         $stmt->bind_param("sssssss", $uuid, $name, $username, $encrypted_password, $salt, $previllage, $photo);
