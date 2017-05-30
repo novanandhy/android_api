@@ -155,12 +155,17 @@ class DB_Functions {
         return $hash;
     }
 
+
+    /**
+     * conver image to base64
+     * @param image string
+     * returns base64 string
+     */
     public function convertImageToBase64($image){
-        $path = 'upload/$image.png';
-        $type = pathinfo($path, PATH_INFO_EXTENSION);
+        $path = "upload/".$image;
         $data = file_get_contents($path);
-        $base64 = 'data:image/' . $type . ';base64,' . base64_encode($data);
-        return $base64
+        $base64 = base64_encode($data);
+        return $base64;
     }
 
 }
