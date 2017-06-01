@@ -1,9 +1,4 @@
-<?php
-
-/**
- * @author Ravi Tamada
- * @link http://www.androidhive.info/2012/01/android-login-and-registration-with-php-mysql-and-sqlite/ Complete tutorial
- */
+ <?php
 
 require_once 'include/DB_Functions.php';
 $db = new DB_Functions();
@@ -11,21 +6,23 @@ $db = new DB_Functions();
 // json response array
 $response = array("error" => FALSE);
 
-if (isset($_POST['name']) && isset($_POST['username'])) {
+if (isset($_POST['unique_id']) && isset($_POST['name']) && isset($_POST['username']) && isset($_POST['image'])) {
 
     // receiving the post params
+    $unique_id = $_POST['unique_id'];
     $name = $_POST['name'];
     $username = $_POST['username'];
+    $image = $_POST['image'];
 
     // check if user is already existed with the same username
-    if ($db->isUserExisted($username)) {
-        // user already existed
-        $response["error"] = TRUE;
-        $response["error_msg"] = "username already existed";
-        echo json_encode($response);
-    } else {
+    // if ($db->isUserExisted($username)) {
+    //     // user already existed
+    //     $response["error"] = TRUE;
+    //     $response["error_msg"] = "User already existed with " . $username;
+    //     echo json_encode($response);
+    // } else {
         // create a new user
-        $user = $db->storeUser($name, $previllage, $username, $password);
+        $user = $db->updateUser($unique_id, $name, $username, $image);
         if ($user) {
             // user stored successfully
             $response["error"] = FALSE;
@@ -42,7 +39,7 @@ if (isset($_POST['name']) && isset($_POST['username'])) {
             $response["error_msg"] = "Unknown error occurred in registration!";
             echo json_encode($response);
         }
-    }
+    // }
 } else {
     $response["error"] = TRUE;
     $response["error_msg"] = "Required parameters is missing!";

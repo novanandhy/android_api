@@ -33,8 +33,6 @@ class DB_Functions {
         $salt = $hash["salt"]; // salt
         $photo = $username . ".png";  
         $path = "upload/$username.png";
-        $photo = $name . ".png";  
-        $path = "upload/$name.png";
 
         $stmt = $this->conn->prepare("INSERT INTO user_tes(unique_id, name, username, encrypted_password, salt, previllage, created_at, image) VALUES(?, ?, ?, ?, ?, ?, NOW(), ?)");
         $stmt->bind_param("sssssss", $uuid, $name, $username, $encrypted_password, $salt, $previllage, $photo);
@@ -54,26 +52,20 @@ class DB_Functions {
      * updating existed user
      * returns user details
      */
-    public function updateUser($name, $previllage, $username, $password) {
-        $uuid = uniqid('', true);
-        $hash = $this->hashSSHA($password);
-        $encrypted_password = $hash["encrypted"]; // encrypted password
-        $salt = $hash["salt"]; // salt
+    public function updateUser($unique_id, $name, $username, $image) {
+        $photo = $username . ".png";  
+        $path = "upload/$username.png";
 
-        $stmt = $this->conn->prepare("INSERT INTO user_tes(unique_id, name, username, encrypted_password, salt, previllage, created_at) VALUES(?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->bind_param("ssssss", $uuid, $name, $username, $encrypted_password, $salt, $previllage);
+        $stmt = $this->conn->prepare("UPDATE user_tes SET username=?, name=?, updated_at=NOW(), image=? WHERE unique_id = ?");
+        $stmt->bind_param("ssss", $username, $name, $photo, $unique_id);
         $result = $stmt->execute();
         $stmt->close();
 
         // check for successful store
         if ($result) {
-            $stmt = $this->conn->prepare("SELECT * FROM user_tes WHERE  username = ?");
-            $stmt->bind_param("s", $username);
-            $stmt->execute();
-            $user = $stmt->get_result()->fetch_assoc();
-            $stmt->close();
-
-            return $user;
+            unlink($path);
+            file_put_contents($path,base64_decode($image));
+            return true;
         } else {
             return false;
         }
