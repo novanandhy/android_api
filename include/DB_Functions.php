@@ -31,8 +31,8 @@ class DB_Functions {
         $hash = $this->hashSSHA($password);
         $encrypted_password = $hash["encrypted"]; // encrypted password
         $salt = $hash["salt"]; // salt
-        $photo = $username . ".png";  
-        $path = "upload/$username.png";
+        $photo = $uuid . ".png";  
+        $path = "upload/$uuid.png";
 
         $stmt = $this->conn->prepare("INSERT INTO user_tes(unique_id, name, username, encrypted_password, salt, previllage, created_at, image) VALUES(?, ?, ?, ?, ?, ?, NOW(), ?)");
         $stmt->bind_param("sssssss", $uuid, $name, $username, $encrypted_password, $salt, $previllage, $photo);
@@ -53,8 +53,8 @@ class DB_Functions {
      * returns user details
      */
     public function updateUser($unique_id, $name, $username, $image) {
-        $photo = $username . ".png";  
-        $path = "upload/$username.png";
+        $photo = $unique_id . ".png";  
+        $path = "upload/$unique_id.png";
 
         $stmt = $this->conn->prepare("UPDATE user_tes SET username=?, name=?, updated_at=NOW(), image=? WHERE unique_id = ?");
         $stmt->bind_param("ssss", $username, $name, $photo, $unique_id);
