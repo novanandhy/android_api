@@ -122,12 +122,30 @@ class DB_Functions {
     }
 
     /**
-     * store history
+     * store relapse history
      * @param uid,latitude,longitude,year,month,date,hour,minut
      */
     public function storeRelapseData($uid,$latitude,$longitude,$date,$month,$year,$hour,$minute){
         $stmt = $this->conn->prepare("INSERT INTO relapse_history(unique_id, latitude, longitude, date, month, year, hour, minute) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("ssssssss", $uid, $latitude, $longitude, $date, $month, $year, $hour, $minute);
+        $result = $stmt->execute();
+        $stmt->close();
+
+        // check for successful store
+        if ($result) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * store medicine history
+     * @param uid,id_medicine,status,year,month,date,hour,minut
+     */
+    public function storeMedicineHistory($unique_id,$id_medicine,$status,$date,$month,$year){
+        $stmt = $this->conn->prepare("INSERT INTO medicine_history(unique_id, id_medicine, status_history, date, month, year) VALUES(?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("ssssss", $unique_id,$id_medicine,$status,$date,$month,$year);
         $result = $stmt->execute();
         $stmt->close();
 
